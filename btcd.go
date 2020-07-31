@@ -54,6 +54,8 @@ func btcdMain(serverChan chan<- *server) error {
 		}
 	}()
 
+	btcdLog.Info("Haechi-Labs")
+
 	// Get a channel that will be closed when a shutdown signal has been
 	// triggered either from an OS signal such as SIGINT (Ctrl+C) or from
 	// another subsystem such as the RPC server.

@@ -8,7 +8,6 @@ package main
 import (
 	"bytes"
 	"crypto/rand"
-	"crypto/tls"
 	"encoding/binary"
 	"errors"
 	"fmt"
@@ -2527,30 +2526,30 @@ out:
 func setupRPCListeners() ([]net.Listener, error) {
 	// Setup TLS if not disabled.
 	listenFunc := net.Listen
-	if !cfg.DisableTLS {
-		// Generate the TLS cert and key file if both don't already
-		// exist.
-		if !fileExists(cfg.RPCKey) && !fileExists(cfg.RPCCert) {
-			err := genCertPair(cfg.RPCCert, cfg.RPCKey)
-			if err != nil {
-				return nil, err
-			}
-		}
-		keypair, err := tls.LoadX509KeyPair(cfg.RPCCert, cfg.RPCKey)
-		if err != nil {
-			return nil, err
-		}
-
-		tlsConfig := tls.Config{
-			Certificates: []tls.Certificate{keypair},
-			MinVersion:   tls.VersionTLS12,
-		}
-
-		// Change the standard net.Listen function to the tls one.
-		listenFunc = func(net string, laddr string) (net.Listener, error) {
-			return tls.Listen(net, laddr, &tlsConfig)
-		}
-	}
+	//if !cfg.DisableTLS {
+	//	// Generate the TLS cert and key file if both don't already
+	//	// exist.
+	//	if !fileExists(cfg.RPCKey) && !fileExists(cfg.RPCCert) {
+	//		err := genCertPair(cfg.RPCCert, cfg.RPCKey)
+	//		if err != nil {
+	//			return nil, err
+	//		}
+	//	}
+	//	keypair, err := tls.LoadX509KeyPair(cfg.RPCCert, cfg.RPCKey)
+	//	if err != nil {
+	//		return nil, err
+	//	}
+	//
+	//	tlsConfig := tls.Config{
+	//		Certificates: []tls.Certificate{keypair},
+	//		MinVersion:   tls.VersionTLS12,
+	//	}
+	//
+	//	// Change the standard net.Listen function to the tls one.
+	//	listenFunc = func(net string, laddr string) (net.Listener, error) {
+	//		return tls.Listen(net, laddr, &tlsConfig)
+	//	}
+	//}
 
 	netAddrs, err := parseListeners(cfg.RPCListeners)
 	if err != nil {

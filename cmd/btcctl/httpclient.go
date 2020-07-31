@@ -2,8 +2,6 @@ package main
 
 import (
 	"bytes"
-	"crypto/tls"
-	"crypto/x509"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
@@ -35,27 +33,27 @@ func newHTTPClient(cfg *config) (*http.Client, error) {
 	}
 
 	// Configure TLS if needed.
-	var tlsConfig *tls.Config
-	if !cfg.NoTLS && cfg.RPCCert != "" {
-		pem, err := ioutil.ReadFile(cfg.RPCCert)
-		if err != nil {
-			return nil, err
-		}
-
-		pool := x509.NewCertPool()
-		pool.AppendCertsFromPEM(pem)
-		tlsConfig = &tls.Config{
-			RootCAs:            pool,
-			InsecureSkipVerify: cfg.TLSSkipVerify,
-		}
-	}
+	//var tlsConfig *tls.Config
+	//if !cfg.NoTLS && cfg.RPCCert != "" {
+	//	pem, err := ioutil.ReadFile(cfg.RPCCert)
+	//	if err != nil {
+	//		return nil, err
+	//	}
+	//
+	//	pool := x509.NewCertPool()
+	//	pool.AppendCertsFromPEM(pem)
+	//	tlsConfig = &tls.Config{
+	//		RootCAs:            pool,
+	//		InsecureSkipVerify: cfg.TLSSkipVerify,
+	//	}
+	//}
 
 	// Create and return the new HTTP client potentially configured with a
 	// proxy and TLS.
 	client := http.Client{
 		Transport: &http.Transport{
 			Dial:            dial,
-			TLSClientConfig: tlsConfig,
+			TLSClientConfig: nil,
 		},
 	}
 	return &client, nil
@@ -68,9 +66,9 @@ func newHTTPClient(cfg *config) (*http.Client, error) {
 func sendPostRequest(marshalledJSON []byte, cfg *config) ([]byte, error) {
 	// Generate a request to the configured RPC server.
 	protocol := "http"
-	if !cfg.NoTLS {
-		protocol = "https"
-	}
+	//if !cfg.NoTLS {
+	//	protocol = "https"
+	//}
 	url := protocol + "://" + cfg.RPCServer
 	bodyReader := bytes.NewReader(marshalledJSON)
 	httpRequest, err := http.NewRequest("POST", url, bodyReader)
